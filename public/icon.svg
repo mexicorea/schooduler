@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="School scheduler icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#bae6fd" />
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="url(#bg)" />
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="none" stroke="#0f172a" stroke-opacity=".15" stroke-width="2" />
+  <text
+    x="32"
+    y="38"
+    text-anchor="middle"
+    font-size="28"
+    font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif"
+  >
+    📚
+  </text>
+</svg>

@@ -4,7 +4,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Schooduler',
-  description: 'Elementary school timetable app'
+  description: 'Elementary school timetable app',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg'
+  }
 }
 
 export default function RootLayout({
