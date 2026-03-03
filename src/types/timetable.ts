@@ -4,7 +4,7 @@ export type Weekday = 'mon' | 'tue' | 'wed' | 'thu' | 'fri'
 
 export type Period = 1 | 2 | 3 | 4 | 5 | 6
 
-export type LunchAfterPeriod = Exclude<Period, 6>
+export type LunchAfterPeriod = 3 | 4 | 5
 
 export type CellKey = `${Weekday}-${Period}`
 
@@ -46,7 +46,7 @@ export interface AppState {
   cells: TimetableCells
   subjectColors: SubjectColorMap
   activities: ActivityItem[]
-  version: 4
+  version: 5
 }
 
 export type TableRow =
@@ -68,4 +68,4 @@ export const WEEKDAYS: Weekday[] = ['mon', 'tue', 'wed', 'thu', 'fri']
 
 export const PERIODS: Period[] = [1, 2, 3, 4, 5, 6]
 
-export const LUNCH_AFTER_PERIODS: LunchAfterPeriod[] = [1, 2, 3, 4, 5]
+export const LUNCH_AFTER_PERIODS: LunchAfterPeriod[] = [3, 4, 5]

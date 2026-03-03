@@ -14,8 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/sonner'
 import { messagesByLang, MessageKey } from '@/i18n'
 import { exportStateAsJson, readJsonFile } from '@/lib/import-export'
-import { collectSubjects } from '@/lib/pastel-color'
 import { parseImportedState } from '@/lib/schema'
+import { collectSubjectPanelList } from '@/lib/subject-panel'
 import { useTimetableStore } from '@/stores/use-timetable-store'
 
 export default function Home() {
@@ -43,7 +43,7 @@ export default function Home() {
 
   const t = useCallback((key: MessageKey) => messagesByLang[lang][key], [lang])
 
-  const subjects = useMemo(() => collectSubjects(cells), [cells])
+  const subjects = useMemo(() => collectSubjectPanelList(cells), [cells])
 
   const exportCurrentState = () => {
     exportStateAsJson({
@@ -54,7 +54,7 @@ export default function Home() {
       cells,
       subjectColors,
       activities,
-      version: 4
+      version: 5
     }, {
       preferredTitle: timetableTitle
     })

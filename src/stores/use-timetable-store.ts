@@ -188,7 +188,7 @@ export const useTimetableStore = create<TimetableStore>()(
     }),
     {
       name: 'simple-timetable-v1',
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState) => {
         return parseImportedState(persistedState)

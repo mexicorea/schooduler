@@ -36,5 +36,5 @@ export const createInitialAppState = (): AppState => ({
   cells: createDefaultCells(),
   subjectColors: {},
   activities: [],
-  version: 4
+  version: 5
 })

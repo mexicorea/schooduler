@@ -64,4 +64,17 @@ describe('time-calc', () => {
       start: '13:10'
     })
   })
+
+  it('점심 위치가 너무 이르면 3교시와 4교시 사이로 보정해야 한다', () => {
+    const rows = buildTableRows({
+      ...defaultTimeConfig,
+      lunchAfterPeriod: 1
+    })
+
+    expect(rows[3]).toMatchObject({
+      type: 'lunch',
+      start: '11:20',
+      end: '12:10'
+    })
+  })
 })

@@ -169,13 +169,13 @@ export const parseImportedState = (raw: unknown): AppState => {
       firstPeriodStart,
       classMinutes,
       breakMinutes,
-      lunchAfterPeriod: clamp(lunchAfterPeriod, 1, 5) as AppState['timeConfig']['lunchAfterPeriod'],
+      lunchAfterPeriod: clamp(lunchAfterPeriod, 3, 5) as AppState['timeConfig']['lunchAfterPeriod'],
       lunchMinutes: clamp(lunchMinutes, 1, 180)
     },
     cells,
     subjectColors: cleanupSubjectColors(cells, canonicalSubjectColors),
     activities,
-    version: 4
+    version: 5
   }
 
   return mergedState
