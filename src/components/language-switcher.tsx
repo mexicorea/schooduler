@@ -10,6 +10,11 @@ type LanguageSwitcherProps = {
   t: (key: MessageKey) => string
 }
 
+const LANGUAGE_AUTONYM: Record<Lang, string> = {
+  ko: '한국어',
+  en: 'English'
+}
+
 export function LanguageSwitcher({ lang, onChange, t }: LanguageSwitcherProps) {
   return (
     <div className='flex items-center gap-2'>
@@ -19,8 +24,8 @@ export function LanguageSwitcher({ lang, onChange, t }: LanguageSwitcherProps) {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value='ko'>{t('language.ko')}</SelectItem>
-          <SelectItem value='en'>{t('language.en')}</SelectItem>
+          <SelectItem value='ko'>{LANGUAGE_AUTONYM.ko}</SelectItem>
+          <SelectItem value='en'>{LANGUAGE_AUTONYM.en}</SelectItem>
         </SelectContent>
       </Select>
     </div>

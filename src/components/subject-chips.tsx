@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { MessageKey } from '@/i18n'
-import { getSubjectDisplayName } from '@/lib/subject-translation'
+import { getSubjectDisplayName, getSubjectDisplayNameWithEmoji, isPresetSubjectName } from '@/lib/subject-translation'
 import { Lang } from '@/types/timetable'
 
 type SubjectChipsProps = {
@@ -86,6 +86,8 @@ export function SubjectChips({ lang, subjects, subjectColors, onRemove, onColorC
             {subjects.map((subject) => {
               const color = getDisplayColor(subject)
               const displaySubject = getSubjectDisplayName(subject, lang)
+              const displaySubjectWithEmoji = getSubjectDisplayNameWithEmoji(subject, lang)
+              const isRemovable = !isPresetSubjectName(subject)
 
               return (
                 <Popover key={subject}>
@@ -96,9 +98,9 @@ export function SubjectChips({ lang, subjects, subjectColors, onRemove, onColorC
                     onDragStart={(event) => {
                       cleanupDragGhost()
                       event.dataTransfer.setData('application/x-timetable-subject', subject)
-                      event.dataTransfer.setData('text/plain', displaySubject)
+                      event.dataTransfer.setData('text/plain', displaySubjectWithEmoji)
                       event.dataTransfer.effectAllowed = 'copy'
-                      const dragGhost = createChipDragGhost(displaySubject, color)
+                      const dragGhost = createChipDragGhost(displaySubjectWithEmoji, color)
                       document.body.appendChild(dragGhost)
                       dragGhostRef.current = dragGhost
                       event.dataTransfer.setDragImage(dragGhost, dragGhost.offsetWidth / 2, dragGhost.offsetHeight / 2)
@@ -111,11 +113,11 @@ export function SubjectChips({ lang, subjects, subjectColors, onRemove, onColorC
                         className='rounded-full px-2 py-1 hover:bg-white/40'
                         aria-label={`${displaySubject} color`}
                       >
-                        {displaySubject}
+                        {displaySubjectWithEmoji}
                       </button>
                     </PopoverTrigger>
                     <PopoverContent className='w-52 space-y-2'>
-                      <p className='text-sm font-semibold'>{displaySubject}</p>
+                      <p className='text-sm font-semibold'>{displaySubjectWithEmoji}</p>
                       <input
                         type='color'
                         value={color}
@@ -131,19 +133,21 @@ export function SubjectChips({ lang, subjects, subjectColors, onRemove, onColorC
                         className='h-10 w-full cursor-pointer rounded-md border border-input'
                       />
                     </PopoverContent>
-                    <Button
-                      type='button'
-                      size='icon'
-                      variant='ghost'
-                      className='h-6 w-6 rounded-full opacity-70 hover:opacity-100'
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        onRemove(subject)
-                      }}
-                      aria-label={`${displaySubject} delete`}
-                    >
-                      <X className='h-3 w-3' />
-                    </Button>
+                    {isRemovable ? (
+                      <Button
+                        type='button'
+                        size='icon'
+                        variant='ghost'
+                        className='h-6 w-6 rounded-full opacity-70 hover:opacity-100'
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          onRemove(subject)
+                        }}
+                        aria-label={`${displaySubject} delete`}
+                      >
+                        <X className='h-3 w-3' />
+                      </Button>
+                    ) : null}
                   </div>
                 </Popover>
               )
