@@ -1,5 +1,5 @@
 export const messagesKo = {
-  'app.name': '초등 시간표',
+  'app.name': 'Schooduler',
   'app.description': '월요일부터 금요일까지, 1교시부터 6교시와 특별 활동을 관리해요',
   'common.import': '불러오기',
   'common.export': '내보내기',

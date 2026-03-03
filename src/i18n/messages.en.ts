@@ -1,5 +1,5 @@
 export const messagesEn = {
-  'app.name': 'Simple Timetable',
+  'app.name': 'Schooduler',
   'app.description': 'Manage Monday to Friday from period 1 to 6 with club activities',
   'common.import': 'Import',
   'common.export': 'Export',
