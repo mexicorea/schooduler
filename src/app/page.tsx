@@ -1,65 +1,205 @@
-import Image from "next/image";
+'use client'
+
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
+
+import { ActivitiesPanel } from '@/components/activities-panel'
+import { ClubActivityTimeline } from '@/components/club-activity-timeline'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import { SettingsPanel } from '@/components/settings-panel'
+import { SubjectChips } from '@/components/subject-chips'
+import { TimetableGrid } from '@/components/timetable-grid'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Toaster } from '@/components/ui/sonner'
+import { messagesByLang, MessageKey } from '@/i18n'
+import { exportStateAsJson, readJsonFile } from '@/lib/import-export'
+import { collectSubjects } from '@/lib/pastel-color'
+import { parseImportedState } from '@/lib/schema'
+import { useTimetableStore } from '@/stores/use-timetable-store'
 
 export default function Home() {
+  const lang = useTimetableStore((state) => state.lang)
+  const timetableTitle = useTimetableStore((state) => state.timetableTitle)
+  const studentInfo = useTimetableStore((state) => state.studentInfo)
+  const timeConfig = useTimetableStore((state) => state.timeConfig)
+  const cells = useTimetableStore((state) => state.cells)
+  const subjectColors = useTimetableStore((state) => state.subjectColors)
+  const activities = useTimetableStore((state) => state.activities)
+  const setLang = useTimetableStore((state) => state.setLang)
+  const setTimetableTitle = useTimetableStore((state) => state.setTimetableTitle)
+  const setTimeField = useTimetableStore((state) => state.setTimeField)
+  const setCellSubject = useTimetableStore((state) => state.setCellSubject)
+  const removeSubject = useTimetableStore((state) => state.removeSubject)
+  const setSubjectColor = useTimetableStore((state) => state.setSubjectColor)
+  const addActivity = useTimetableStore((state) => state.addActivity)
+  const removeActivity = useTimetableStore((state) => state.removeActivity)
+  const importState = useTimetableStore((state) => state.importState)
+  const resetState = useTimetableStore((state) => state.resetState)
+
+  const importRef = useRef<HTMLInputElement | null>(null)
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [titleDraft, setTitleDraft] = useState('')
+
+  const t = useCallback((key: MessageKey) => messagesByLang[lang][key], [lang])
+
+  const subjects = useMemo(() => collectSubjects(cells), [cells])
+
+  const exportCurrentState = () => {
+    exportStateAsJson({
+      lang,
+      timetableTitle,
+      studentInfo,
+      timeConfig,
+      cells,
+      subjectColors,
+      activities,
+      version: 4
+    }, {
+      preferredTitle: timetableTitle
+    })
+  }
+
+  const importJson = async (file: File) => {
+    try {
+      const parsed = parseImportedState(await readJsonFile(file))
+      importState(parsed)
+      toast.success(t('toast.import.success'))
+    } catch {
+      toast.error(t('toast.import.error'))
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className='min-h-screen bg-gradient-to-b from-amber-50 via-sky-50 to-lime-50 px-4 py-6 sm:px-6'>
+      <div className='mx-auto max-w-[1500px] space-y-4'>
+        <header className='rounded-2xl border-2 bg-white/90 p-4 shadow-sm'>
+          <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+            <div>
+              <h1 className='text-2xl font-extrabold tracking-tight sm:text-3xl'>{t('app.name')}</h1>
+              <p className='mt-1 text-sm text-muted-foreground sm:text-base'>{t('app.description')}</p>
+            </div>
+            <div className='flex flex-wrap items-center gap-2'>
+              <LanguageSwitcher lang={lang} onChange={setLang} t={t} />
+              <input
+                ref={importRef}
+                type='file'
+                accept='application/json'
+                className='hidden'
+                onChange={async (event) => {
+                  const file = event.target.files?.[0]
+                  if (file) {
+                    await importJson(file)
+                    event.target.value = ''
+                  }
+                }}
+              />
+              <Button type='button' variant='outline' onClick={() => importRef.current?.click()}>
+                {t('common.import')}
+              </Button>
+              <Button type='button' variant='outline' onClick={exportCurrentState}>
+                {t('common.export')}
+              </Button>
+              <Button
+                type='button'
+                variant='destructive'
+                onClick={() => {
+                  resetState()
+                  toast.success(t('toast.reset.done'))
+                }}
+              >
+                {t('common.reset')}
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <main className='grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)_320px]'>
+          <aside className='space-y-4'>
+            <SettingsPanel
+              lang={lang}
+              timeConfig={timeConfig}
+              onTimeNumberChange={(field, value) => setTimeField(field, value)}
+              onTimeValueChange={(field, value) => setTimeField(field, value)}
+              t={t}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <ActivitiesPanel activities={activities} onAddActivity={addActivity} onRemoveActivity={removeActivity} t={t} />
+          </aside>
+
+          <section className='space-y-3'>
+            {isEditingTitle ? (
+              <div className='flex justify-center'>
+                <form
+                  className='flex w-full max-w-xl items-center gap-2'
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    setTimetableTitle(titleDraft.trim() || 'no name')
+                    setIsEditingTitle(false)
+                  }}
+                >
+                  <Input
+                    value={titleDraft}
+                    maxLength={40}
+                    autoFocus
+                    onChange={(event) => setTitleDraft(event.target.value)}
+                    placeholder='no name'
+                  />
+                  <Button
+                    type='submit'
+                  >
+                    OK
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                    onClick={() => {
+                      setTitleDraft(timetableTitle)
+                      setIsEditingTitle(false)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div className='flex justify-center'>
+                <button
+                  type='button'
+                  className='rounded-full border bg-amber-100/80 px-6 py-2 text-center text-xl font-extrabold text-amber-900 transition hover:bg-amber-100 sm:text-2xl'
+                  onClick={() => {
+                    setTitleDraft(timetableTitle)
+                    setIsEditingTitle(true)
+                  }}
+                >
+                  {timetableTitle || 'no name'}
+                </button>
+              </div>
+            )}
+            <TimetableGrid
+              lang={lang}
+              cells={cells}
+              subjects={subjects}
+              subjectColors={subjectColors}
+              timeConfig={timeConfig}
+              onSaveCell={setCellSubject}
+              t={t}
+            />
+            <ClubActivityTimeline activities={activities} t={t} />
+          </section>
+
+          <aside>
+            <SubjectChips
+              lang={lang}
+              subjects={subjects}
+              subjectColors={subjectColors}
+              onRemove={removeSubject}
+              onColorChange={setSubjectColor}
+              t={t}
+            />
+          </aside>
+        </main>
+      </div>
+      <Toaster position='top-center' richColors />
     </div>
-  );
+  )
 }
