@@ -76,9 +76,9 @@ export function ClubActivityTimeline({ activities, t }: ClubActivityTimelineProp
 
   return (
     <div className='space-y-2'>
-      <h3 className='px-1 text-lg font-bold'>{t('activity.timeline.title')}</h3>
-      <div className='overflow-x-auto rounded-2xl border-2 bg-white/90 shadow-sm'>
-        <div className='min-w-[760px] overflow-hidden'>
+      <h3 className='print-hide-subtitle px-1 text-lg font-bold'>{t('activity.timeline.title')}</h3>
+      <div className='print-timeline-grid overflow-x-auto rounded-2xl border-2 bg-white/90 shadow-sm'>
+        <div className='print-timeline-inner min-w-[760px] overflow-hidden'>
           <div className='grid grid-cols-[210px_repeat(5,minmax(0,1fr))] border-b bg-slate-100'>
             <div className='border-r px-2 py-3 text-center text-base font-extrabold'>{t('table.time')}</div>
             {WEEKDAYS.map((weekday) => (

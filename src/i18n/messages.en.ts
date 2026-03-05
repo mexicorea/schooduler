@@ -3,6 +3,7 @@ export const messagesEn = {
   'app.description': 'Manage Monday to Friday from period 1 to 6 with club activities',
   'common.import': 'Import',
   'common.export': 'Export',
+  'common.print': 'Print',
   'common.reset': 'Reset',
   'common.save': 'Save',
   'common.delete': 'Delete',

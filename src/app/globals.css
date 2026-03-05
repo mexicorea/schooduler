@@ -126,3 +126,56 @@
     @apply bg-background text-foreground;
   }
 }
+
+.only-print {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: portrait;
+    margin: 12mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .only-print {
+    display: block !important;
+  }
+
+  .print-hide-subtitle {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-only-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .print-only-content .shadow-sm {
+    box-shadow: none !important;
+  }
+
+  .print-section-spacing {
+    margin-top: 8mm;
+  }
+
+  .print-timetable-grid,
+  .print-timeline-grid {
+    overflow: visible !important;
+  }
+
+  .print-timetable-table,
+  .print-timeline-inner {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}

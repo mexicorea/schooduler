@@ -70,10 +70,14 @@ export default function Home() {
     }
   }
 
+  const printTimetable = () => {
+    window.print()
+  }
+
   return (
     <div className='min-h-screen bg-gradient-to-b from-amber-50 via-sky-50 to-lime-50 px-4 py-6 sm:px-6'>
       <div className='mx-auto max-w-[1500px] space-y-4'>
-        <header className='rounded-2xl border-2 bg-white/90 p-4 shadow-sm'>
+        <header className='no-print rounded-2xl border-2 bg-white/90 p-4 shadow-sm'>
           <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
             <div>
               <h1 className='text-2xl font-extrabold tracking-tight sm:text-3xl'>{t('app.name')}</h1>
@@ -100,6 +104,9 @@ export default function Home() {
               <Button type='button' variant='outline' onClick={exportCurrentState}>
                 {t('common.export')}
               </Button>
+              <Button type='button' variant='outline' onClick={printTimetable}>
+                {t('common.print')}
+              </Button>
               <Button
                 type='button'
                 variant='destructive'
@@ -115,7 +122,7 @@ export default function Home() {
         </header>
 
         <main className='grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)_320px]'>
-          <aside className='space-y-4'>
+          <aside className='no-print space-y-4'>
             <SettingsPanel
               lang={lang}
               timeConfig={timeConfig}
@@ -126,9 +133,15 @@ export default function Home() {
             <ActivitiesPanel activities={activities} onAddActivity={addActivity} onRemoveActivity={removeActivity} t={t} />
           </aside>
 
-          <section className='space-y-3'>
+          <section className='print-only-content space-y-3'>
+            <h2
+              data-testid='print-title'
+              className='only-print text-center text-3xl font-extrabold text-zinc-900'
+            >
+              {timetableTitle || 'no name'}
+            </h2>
             {isEditingTitle ? (
-              <div className='flex justify-center'>
+              <div className='no-print flex justify-center'>
                 <form
                   className='flex w-full max-w-xl items-center gap-2'
                   onSubmit={(event) => {
@@ -165,7 +178,7 @@ export default function Home() {
               <div className='flex justify-center'>
                 <button
                   type='button'
-                  className='rounded-full border bg-amber-100/80 px-6 py-2 text-center text-xl font-extrabold text-amber-900 transition hover:bg-amber-100 sm:text-2xl'
+                  className='no-print rounded-full border bg-amber-100/80 px-6 py-2 text-center text-xl font-extrabold text-amber-900 transition hover:bg-amber-100 sm:text-2xl'
                   onClick={() => {
                     setTitleDraft(timetableTitle)
                     setIsEditingTitle(true)
@@ -175,19 +188,25 @@ export default function Home() {
                 </button>
               </div>
             )}
-            <TimetableGrid
-              lang={lang}
-              cells={cells}
-              subjects={subjects}
-              subjectColors={subjectColors}
-              timeConfig={timeConfig}
-              onSaveCell={setCellSubject}
-              t={t}
-            />
-            <ClubActivityTimeline activities={activities} t={t} />
+            <div data-testid='print-regular-timetable'>
+              <TimetableGrid
+                lang={lang}
+                cells={cells}
+                subjects={subjects}
+                subjectColors={subjectColors}
+                timeConfig={timeConfig}
+                onSaveCell={setCellSubject}
+                t={t}
+              />
+            </div>
+            {activities.length > 0 ? (
+              <div data-testid='print-activities' className='print-section-spacing'>
+                <ClubActivityTimeline activities={activities} t={t} />
+              </div>
+            ) : null}
           </section>
 
-          <aside>
+          <aside className='no-print'>
             <SubjectChips
               lang={lang}
               subjects={subjects}

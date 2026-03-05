@@ -37,8 +37,8 @@ export function TimetableGrid({
   const rows = buildTableRows(timeConfig)
 
   return (
-    <div className='overflow-x-auto rounded-2xl border-2 bg-white/90 shadow-sm'>
-      <table className='w-full min-w-[760px] table-fixed border-collapse'>
+    <div className='print-timetable-grid overflow-x-auto rounded-2xl border-2 bg-white/90 shadow-sm'>
+      <table className='print-timetable-table w-full min-w-[760px] table-fixed border-collapse'>
         <colgroup>
           <col className='w-[210px]' />
           <col />

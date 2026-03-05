@@ -3,6 +3,7 @@ export const messagesKo = {
   'app.description': '월요일부터 금요일까지, 1교시부터 6교시와 특별 활동을 관리해요',
   'common.import': '불러오기',
   'common.export': '내보내기',
+  'common.print': '인쇄',
   'common.reset': '초기화',
   'common.save': '저장',
   'common.delete': '삭제',
